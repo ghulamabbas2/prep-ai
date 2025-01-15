@@ -2,6 +2,8 @@ import dbConnect from "@/backend/config/dbConnect";
 import User from "@/backend/models/user.model";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GitHubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 
 const options = {
   providers: [
@@ -33,14 +35,60 @@ const options = {
         return user;
       },
     }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
   ],
   session: {
     strategy: "jwt" as const,
   },
   callbacks: {
+    async signIn({ user, account, profile }: any) {
+      await dbConnect();
+
+      if (account?.provider === "credentials") {
+        user.id = user?._id;
+      } else {
+        // Handle social login
+        const existingUser = await User.findOne({ email: user?.email });
+
+        if (!existingUser) {
+          const newUser = new User({
+            email: user?.email,
+            name: user?.name,
+            profilePicture: { url: profile?.image || user?.image },
+            authProviders: [
+              {
+                provider: account?.provider,
+                providerId: profile?.id || profile?.sub,
+              },
+            ],
+          });
+
+          await newUser.save();
+          user.id = newUser._id;
+        } else {
+          user.id = existingUser._id;
+        }
+      }
+
+      return true;
+    },
     async jwt({ token, user }: any) {
       if (user) {
         token.user = user;
+      } else {
+        await dbConnect();
+
+        const dbUser = await User.findById(token.user.id);
+        if (dbUser) {
+          token.user = dbUser;
+        }
       }
 
       return token;
