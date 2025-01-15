@@ -73,6 +73,26 @@ const options = {
           await newUser.save();
           user.id = newUser._id;
         } else {
+          const existingPrvider = existingUser.authProviders.find(
+            (provider: { provider: string }) =>
+              provider.provider === account?.provider
+          );
+
+          if (!existingPrvider) {
+            existingUser.authProviders.push({
+              provider: account?.provider,
+              providerId: profile?.id || profile?.sub,
+            });
+
+            if (!existingUser.profilePicture.url) {
+              existingUser.profilePicture = {
+                url: profile?.image || user?.image,
+              };
+            }
+
+            await existingUser.save();
+          }
+
           user.id = existingUser._id;
         }
       }
