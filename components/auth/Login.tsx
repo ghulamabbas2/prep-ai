@@ -5,24 +5,32 @@ import { Button, Input, Link, Form, Divider } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 import { Logo } from "@/config/Logo";
 import { signIn } from "next-auth/react";
+import { useGenericSubmitHandler } from "../form/genericSubmitHandler";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [isVisible, setIsVisible] = React.useState(false);
+  const router = useRouter();
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const { handleSubmit, loading } = useGenericSubmitHandler(async (data) => {
     const res = await signIn("credentials", {
       redirect: false,
-      email: e.currentTarget.email.value,
-      password: e.currentTarget.password.value,
+      email: data.email,
+      password: data.password,
       callbackUrl: "/app/dashboard",
     });
 
-    console.log(res);
-  };
+    if (res?.error) {
+      return toast.error(res?.error);
+    }
+
+    if (res?.ok) {
+      router.push("/app/dashboard");
+    }
+  });
 
   const handleGithubLogin = async () => {
     await signIn("github", {
@@ -48,7 +56,7 @@ export default function Login() {
         </div>
         <Form
           className="flex flex-col gap-3"
-          onSubmit={submitHandler}
+          onSubmit={handleSubmit}
           validationBehavior="native"
         >
           <Input
@@ -91,7 +99,13 @@ export default function Login() {
               Forgot password?
             </Link>
           </div>
-          <Button className="w-full" color="primary" type="submit">
+          <Button
+            className="w-full"
+            color="primary"
+            type="submit"
+            isDisabled={loading}
+            isLoading={loading}
+          >
             Sign In
           </Button>
         </Form>
