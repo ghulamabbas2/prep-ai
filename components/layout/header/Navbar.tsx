@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  Navbar as NextUINavbar,
+  Navbar as HeroUINavbar,
   NavbarContent,
   NavbarMenu,
   NavbarMenuToggle,
@@ -29,7 +29,7 @@ const Navbar = () => {
   console.log(user);
 
   return (
-    <NextUINavbar
+    <HeroUINavbar
       maxWidth="xl"
       position="sticky"
       isMenuOpen={isMenuOpen}
@@ -170,7 +170,7 @@ const Navbar = () => {
           </Link>
         </NavbarMenuItem>
       </NavbarMenu>
-    </NextUINavbar>
+    </HeroUINavbar>
   );
 };
 

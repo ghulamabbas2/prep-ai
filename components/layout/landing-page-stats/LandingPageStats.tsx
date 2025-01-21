@@ -34,7 +34,7 @@ const data: CircleChartProps[] = [
       {
         name: "Active Users",
         value: 10000,
-        fill: "hsl(var(--nextui-primary))",
+        fill: "hsl(var(--heroui-primary))",
       },
     ],
   },
@@ -46,7 +46,7 @@ const data: CircleChartProps[] = [
       {
         name: "Interviews Created",
         value: 650000,
-        fill: "hsl(var(--nextui-primary))",
+        fill: "hsl(var(--heroui-primary))",
       },
     ],
   },
@@ -58,7 +58,7 @@ const data: CircleChartProps[] = [
       {
         name: "Companies",
         value: 3150,
-        fill: "hsl(var(--nextui-secondary))",
+        fill: "hsl(var(--heroui-secondary))",
       },
     ],
   },
@@ -67,7 +67,7 @@ const data: CircleChartProps[] = [
     color: "success",
     total: 4.8,
     chartData: [
-      { name: "Ratings", value: 4.5, fill: "hsl(var(--nextui-success))" },
+      { name: "Ratings", value: 4.5, fill: "hsl(var(--heroui-success))" },
     ],
   },
 ];
@@ -129,7 +129,7 @@ const CircleChartCard = React.forwardRef<
               animationDuration={1000}
               animationEasing="ease"
               background={{
-                fill: "hsl(var(--nextui-default-100))",
+                fill: "hsl(var(--heroui-default-100))",
               }}
               cornerRadius={12}
               dataKey="value"
@@ -137,7 +137,7 @@ const CircleChartCard = React.forwardRef<
               {chartData.map((_, index) => (
                 <Cell
                   key={`cell-${index}`}
-                  fill={`hsl(var(--nextui-${
+                  fill={`hsl(var(--heroui-${
                     color === "default" ? "foreground" : color
                   }))`}
                 />
