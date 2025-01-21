@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Button, Input, Form } from "@nextui-org/react";
+import { Button, Input, Form } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { Logo } from "@/config/Logo";
 import { useGenericSubmitHandler } from "../form/genericSubmitHandler";

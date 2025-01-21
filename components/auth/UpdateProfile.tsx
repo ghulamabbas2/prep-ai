@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Input, Form, Avatar } from "@nextui-org/react";
+import { Button, Input, Form, Avatar } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useSession } from "next-auth/react";
 import { useGenericSubmitHandler } from "../form/genericSubmitHandler";

@@ -8,12 +8,12 @@ import {
   NavbarBrand,
   NavbarItem,
   NavbarMenuItem,
-} from "@nextui-org/navbar";
+} from "@heroui/react";
 import NextLink from "next/link";
 
 import { Logo } from "@/config/Logo";
 import HeaderUser from "./HeaderUser";
-import { Button, Link, Skeleton, User } from "@nextui-org/react";
+import { Button, Link, Skeleton, User } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { siteConfig } from "@/config/site";
 import { signOut, useSession } from "next-auth/react";

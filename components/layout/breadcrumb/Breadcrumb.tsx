@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import { Link } from "@nextui-org/react";
+import { Link } from "@heroui/react";
 
 interface BreadCrumbProps {
   title: string;

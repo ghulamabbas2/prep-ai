@@ -7,7 +7,7 @@ import {
   Divider,
   Link,
   Button,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Icon } from "@iconify/react";
 
 const Pricing = () => {

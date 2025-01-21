@@ -4,8 +4,8 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-} from "@nextui-org/react";
-import { User } from "@nextui-org/react";
+} from "@heroui/react";
+import { User } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { IUser } from "@/backend/models/user.model";
 import { signOut } from "next-auth/react";

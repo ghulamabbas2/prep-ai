@@ -1,6 +1,6 @@
 "use client";
 
-import type { ButtonProps, CardProps } from "@nextui-org/react";
+import type { ButtonProps, CardProps } from "@heroui/react";
 
 import React from "react";
 import {
@@ -10,7 +10,7 @@ import {
   Cell,
   PolarAngleAxis,
 } from "recharts";
-import { Card, cn } from "@nextui-org/react";
+import { Card, cn } from "@heroui/react";
 
 type ChartData = {
   name: string;

@@ -7,5 +7,5 @@ export default withAuth(function middleware(req) {
 });
 
 export const config = {
-  matcher: ["/app/:path*"],
+  matcher: ["/app/:path*", "/api/interivews/:path*"],
 };

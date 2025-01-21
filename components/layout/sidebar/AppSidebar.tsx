@@ -1,8 +1,8 @@
 "use client";
 
 import React, { ReactNode, useEffect, useState } from "react";
-import { cn, Listbox, ListboxItem } from "@nextui-org/react";
-import { Button, Link } from "@nextui-org/react";
+import { cn, Listbox, ListboxItem } from "@heroui/react";
+import { Button, Link } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { usePathname, useRouter } from "next/navigation";
 import { adminPages, appPages } from "@/constants/pages";
