@@ -1,6 +1,7 @@
 import dbConnect from "../config/dbConnect";
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors";
 import Interview from "../models/interview.model";
+import { evaluateAnswer, generateQuestions } from "../openai/openai";
 import { InterviewBody } from "../types/interview.types";
 import { getCurrentUser } from "../utils/auth";
 
@@ -29,7 +30,19 @@ export const createInterview = catchAsyncErrors(async (body: InterviewBody) => {
     role,
   } = body;
 
-  const questions = mockQuestions(numOfQuestions);
+  const questions = await generateQuestions(
+    industry,
+    topic,
+    type,
+    role,
+    numOfQuestions,
+    duration,
+    difficulty
+  );
+
+  console.log(questions);
+
+  // const questions = mockQuestions(numOfQuestions);
 
   const newInterview = await Interview.create({
     industry,
@@ -76,3 +89,10 @@ export const deleteUserInterview = catchAsyncErrors(
     return { deleted: true };
   }
 );
+
+export const evaluteAnswer1 = catchAsyncErrors(async () => {
+  await evaluateAnswer(
+    "What is React.js, and how does it differ from traditional JavaScript frameworks?",
+    "React.js is a JavaScript library that is used for building user interfaces. It is different from traditional JavaScript frameworks because it uses a virtual DOM to update the UI efficiently, and it allows developers to create reusable UI components."
+  );
+});
