@@ -44,7 +44,7 @@ export default function PromptInputWithBottomActions({
 
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
-      handleValueChange(prompt + transcript);
+      handleValueChange(prompt + " " + transcript);
     };
 
     recognition.onerror = (event: any) => {
