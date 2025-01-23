@@ -15,7 +15,7 @@ export interface IQuestion extends Document {
     overallScore: number;
     clarity: number;
     completeness: number;
-    relevence: number;
+    relevance: number;
     suggestion: string;
   };
 }
@@ -59,7 +59,7 @@ const questionSchema = new mongoose.Schema<IQuestion>({
       type: Number,
       default: 0,
     },
-    relevence: {
+    relevance: {
       type: Number,
       default: 0,
     },
@@ -117,7 +117,7 @@ const interviewSchema = new mongoose.Schema<IInterview>(
     duration: {
       type: Number,
       required: [true, "Duration is required"],
-      minlength: [2 * 60, `Duration must be at least ${2 * 60} minute`],
+      minlength: [2 * 60, `Duration must be at least 2 minutes`],
     },
     durationLeft: {
       type: Number,
