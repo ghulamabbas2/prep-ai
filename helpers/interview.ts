@@ -34,3 +34,25 @@ export const getFirstIncompleteQuestionIndex = (questions: IQuestion[]) => {
 
   return firstIncompleteIndex !== -1 ? firstIncompleteIndex : 0;
 };
+
+export const calculateAverageScore = (questions: IQuestion[]) => {
+  if (!questions || questions?.length === 0) return 0;
+
+  const totalScore = questions?.reduce(
+    (sum, question) => sum + (question?.result?.overallScore || 0),
+    0
+  );
+
+  return (totalScore / questions?.length).toFixed(1);
+};
+
+export const calculateDuration = (duration: number, durationLeft: number) => {
+  const durationUsedInMinutes = ((duration - durationLeft) / 60).toFixed(0);
+  const totalDurationInMinutes = (duration / 60).toFixed(0);
+
+  return {
+    total: parseInt(totalDurationInMinutes),
+    strValue: `${durationUsedInMinutes} / ${totalDurationInMinutes} min`,
+    chartDataValue: parseFloat(durationUsedInMinutes),
+  };
+};

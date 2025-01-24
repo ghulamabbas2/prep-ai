@@ -15,3 +15,20 @@ export const formatTime = (seconds: number) => {
     ?.toString()
     .padStart(2, "0")}`;
 };
+
+export const paginate = <T>(
+  data: T[],
+  currentPage: number,
+  itemsPerPage: number
+): T[] => {
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  return data?.slice(startIndex, endIndex);
+};
+
+export const getTotalPages = (
+  totalQuestions: number,
+  questionsPerPage: number
+) => {
+  return Math.ceil(totalQuestions / questionsPerPage);
+};
