@@ -11,6 +11,8 @@ import {
   Chip,
   Tooltip,
   Button,
+  Select,
+  SelectItem,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { IInterview } from "@/backend/models/interview.model";
@@ -20,6 +22,7 @@ import { deleteInterview } from "@/actions/interview.action";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { calculateAverageScore } from "@/helpers/interview";
+import CustomPagination from "../layout/pagination/CustomPagination";
 
 export const columns = [
   { name: "INTERVIEW", uid: "interview" },
@@ -31,11 +34,13 @@ export const columns = [
 type ListInterviewProps = {
   data: {
     interviews: IInterview[];
+    resPerPage: number;
+    filteredCount: number;
   };
 };
 
 export default function ListInterviews({ data }: ListInterviewProps) {
-  const { interviews } = data;
+  const { interviews, resPerPage, filteredCount } = data;
 
   const router = useRouter();
 
@@ -142,8 +147,37 @@ export default function ListInterviews({ data }: ListInterviewProps) {
     []
   );
 
+  let queryParams;
+
+  const handleStatusChange = (status: string) => {
+    queryParams = new URLSearchParams(window.location.search);
+
+    if (queryParams.has("status") && status === "all") {
+      queryParams.delete("status");
+    } else if (queryParams.has("status")) {
+      queryParams.set("status", status);
+    } else {
+      queryParams.append("status", status);
+    }
+
+    const path = `${window.location.pathname}?${queryParams.toString()}`;
+    router.push(path);
+  };
+
   return (
     <div className="my-4">
+      <div className="flex justify-end items-center mb-4">
+        <Select
+          size="sm"
+          className="max-w-xs"
+          label="Select a status"
+          onChange={(event) => handleStatusChange(event.target.value)}
+        >
+          <SelectItem key={"all"}>All</SelectItem>
+          <SelectItem key={"pending"}>Pending</SelectItem>
+          <SelectItem key={"completed"}>Completed</SelectItem>
+        </Select>
+      </div>
       <Table aria-label="Interivews table">
         <TableHeader columns={columns}>
           {(column) => (
@@ -165,6 +199,13 @@ export default function ListInterviews({ data }: ListInterviewProps) {
           )}
         </TableBody>
       </Table>
+
+      <div className="flex justify-center items-center mt-10">
+        <CustomPagination
+          resPerPage={resPerPage}
+          filteredCount={filteredCount}
+        />
+      </div>
     </div>
   );
 }

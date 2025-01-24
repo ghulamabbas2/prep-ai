@@ -26,9 +26,20 @@ export const paginate = <T>(
   return data?.slice(startIndex, endIndex);
 };
 
-export const getTotalPages = (
-  totalQuestions: number,
-  questionsPerPage: number
+export const getTotalPages = (totalItems: number, itemsPerPage: number) => {
+  return Math.ceil(totalItems / itemsPerPage);
+};
+
+export const updateSearchParams = (
+  queryParams: URLSearchParams,
+  key: string,
+  value: string
 ) => {
-  return Math.ceil(totalQuestions / questionsPerPage);
+  if (queryParams.has(key)) {
+    queryParams.set(key, value);
+  } else {
+    queryParams.append(key, value);
+  }
+
+  return queryParams;
 };

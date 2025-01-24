@@ -1,9 +1,11 @@
 import dbConnect from "../config/dbConnect";
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors";
-import Interview, { IQuestion } from "../models/interview.model";
+import Interview, { IInterview, IQuestion } from "../models/interview.model";
 import { evaluateAnswer, generateQuestions } from "../openai/openai";
 import { InterviewBody } from "../types/interview.types";
+import APIFilters from "../utils/apiFilters";
 import { getCurrentUser } from "../utils/auth";
+import { getQueryStr } from "../utils/utils";
 
 const mockQuestions = (numOfQuestions: number) => {
   const questions = [];
@@ -69,9 +71,22 @@ export const getInterviews = catchAsyncErrors(async (request: Request) => {
 
   const user = await getCurrentUser(request);
 
-  const interviews = await Interview.find({ user: user?._id });
+  const resPerPage: number = 2;
 
-  return { interviews };
+  const { searchParams } = new URL(request.url);
+  const queryStr = getQueryStr(searchParams);
+
+  queryStr.user = user?._id;
+
+  const apiFilters = new APIFilters(Interview, queryStr).filter();
+
+  let interviews: IInterview[] = await apiFilters.query;
+  const filteredCount: number = interviews.length;
+
+  apiFilters.pagination(resPerPage).sort();
+  interviews = await apiFilters.query.clone();
+
+  return { interviews, resPerPage, filteredCount };
 });
 
 export const getInterviewById = catchAsyncErrors(async (id: string) => {
