@@ -9,6 +9,7 @@ import { User } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { IUser } from "@/backend/models/user.model";
 import { signOut } from "next-auth/react";
+import { isUserAdmin, isUserSubscribed } from "@/helpers/auth";
 
 const HeaderUser = ({ user }: { user: IUser }) => {
   return (
@@ -33,20 +34,25 @@ const HeaderUser = ({ user }: { user: IUser }) => {
             <p className="font-bold">Signed in as</p>
             <p className="font-bold">{user?.email}</p>
           </DropdownItem>
-          <DropdownItem
-            key="admin_dashboard"
-            href="/admin/dashboard"
-            startContent={<Icon icon="tabler:user-cog" />}
-          >
-            Admin Dashboard
-          </DropdownItem>
-          <DropdownItem
-            key="app_dashboard"
-            href="/app/dashboard"
-            startContent={<Icon icon="hugeicons:ai-brain-04" />}
-          >
-            App Dashboard
-          </DropdownItem>
+          {isUserAdmin(user) ? (
+            <DropdownItem
+              key="admin_dashboard"
+              href="/admin/dashboard"
+              startContent={<Icon icon="tabler:user-cog" />}
+            >
+              Admin Dashboard
+            </DropdownItem>
+          ) : null}
+
+          {isUserAdmin(user) || isUserSubscribed(user) ? (
+            <DropdownItem
+              key="app_dashboard"
+              href="/app/dashboard"
+              startContent={<Icon icon="hugeicons:ai-brain-04" />}
+            >
+              App Dashboard
+            </DropdownItem>
+          ) : null}
           <DropdownItem
             key="logout"
             color="danger"

@@ -11,6 +11,8 @@
   "dependencies": {
     "@heroui/react": "^2.6.14",
     "@iconify/react": "^5.2.0",
+    "@stripe/react-stripe-js": "^3.1.1",
+    "@stripe/stripe-js": "^5.5.0",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
     "clsx": "^2.1.1",
@@ -25,7 +27,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.1",
-    "recharts": "^2.15.0"
+    "recharts": "^2.15.0",
+    "stripe": "^17.5.0"
   },
   "devDependencies": {
     "@react-types/shared": "^3.27.0",

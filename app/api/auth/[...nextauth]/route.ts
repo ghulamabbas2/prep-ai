@@ -99,7 +99,7 @@ const options = {
 
       return true;
     },
-    async jwt({ token, user, trigger }: any) {
+    async jwt({ token, user, trigger, session }: any) {
       if (user) {
         token.user = user;
       } else {
@@ -113,6 +113,10 @@ const options = {
 
       if (trigger === "update") {
         let updatedUser = await User.findById(token.user._id);
+
+        if (session?.subscription) {
+          updatedUser.subscription = session.subscription;
+        }
 
         token.user = updatedUser;
       }

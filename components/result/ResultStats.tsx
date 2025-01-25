@@ -56,7 +56,7 @@ export default function ResultTable({ interview }: { interview: IInterview }) {
       chartData: [
         {
           name: "Result",
-          value: parseInt(averageScore?.toString()),
+          value: parseFloat(averageScore?.toString()),
           fill: "hsl(var(--heroui-success))",
         },
       ],
