@@ -10,6 +10,9 @@ import { IUser } from "@/backend/models/user.model";
 export default function HeaderAccouncement() {
   const { data } = useSession();
   const user = data?.user as IUser;
+
+  if (data === undefined) return;
+  
   return (
     <>
       {!isUserSubscribed(user) && (
