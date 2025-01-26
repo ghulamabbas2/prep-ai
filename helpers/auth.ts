@@ -28,3 +28,7 @@ export const isUserSubscribed = (user: IUser): boolean => {
     user?.subscription?.status === "past_due"
   );
 };
+
+export const isAdminPath = (pathname: string): boolean => {
+  return pathname.includes("/admin");
+};

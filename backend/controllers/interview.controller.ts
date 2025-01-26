@@ -68,28 +68,32 @@ export const createInterview = catchAsyncErrors(async (body: InterviewBody) => {
       })();
 });
 
-export const getInterviews = catchAsyncErrors(async (request: Request) => {
-  await dbConnect();
+export const getInterviews = catchAsyncErrors(
+  async (request: Request, admin?: string) => {
+    await dbConnect();
 
-  const user = await getCurrentUser(request);
+    const user = await getCurrentUser(request);
 
-  const resPerPage: number = 2;
+    const resPerPage: number = 2;
 
-  const { searchParams } = new URL(request.url);
-  const queryStr = getQueryStr(searchParams);
+    const { searchParams } = new URL(request.url);
+    const queryStr = getQueryStr(searchParams);
 
-  queryStr.user = user?._id;
+    if (!admin) {
+      queryStr.user = user?._id;
+    }
 
-  const apiFilters = new APIFilters(Interview, queryStr).filter();
+    const apiFilters = new APIFilters(Interview, queryStr).filter();
 
-  let interviews: IInterview[] = await apiFilters.query;
-  const filteredCount: number = interviews.length;
+    let interviews: IInterview[] = await apiFilters.query;
+    const filteredCount: number = interviews.length;
 
-  apiFilters.pagination(resPerPage).sort();
-  interviews = await apiFilters.query.clone();
+    apiFilters.pagination(resPerPage).sort();
+    interviews = await apiFilters.query.clone();
 
-  return { interviews, resPerPage, filteredCount };
-});
+    return { interviews, resPerPage, filteredCount };
+  }
+);
 
 export const getInterviewById = catchAsyncErrors(async (id: string) => {
   await dbConnect();

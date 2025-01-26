@@ -17,12 +17,13 @@ import {
 import { Icon } from "@iconify/react";
 import { IInterview } from "@/backend/models/interview.model";
 import { Key } from "@react-types/shared";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { deleteInterview } from "@/actions/interview.action";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { calculateAverageScore } from "@/helpers/interview";
 import CustomPagination from "../layout/pagination/CustomPagination";
+import { isAdminPath } from "@/helpers/auth";
 
 export const columns = [
   { name: "INTERVIEW", uid: "interview" },
@@ -43,6 +44,7 @@ export default function ListInterviews({ data }: ListInterviewProps) {
   const { interviews, resPerPage, filteredCount } = data;
 
   const router = useRouter();
+  const pathname = usePathname();
 
   const deleteInterviewHandler = async (interviewId: string) => {
     const res = await deleteInterview(interviewId);
@@ -53,7 +55,12 @@ export default function ListInterviews({ data }: ListInterviewProps) {
 
     if (res?.deleted) {
       toast.success("Interview deleted successfully");
-      router.push("/app/interviews");
+
+      if (isAdminPath(pathname)) {
+        router.push("/admin/interviews");
+      } else {
+        router.push("/app/interviews");
+      }
     }
   };
 
@@ -97,7 +104,8 @@ export default function ListInterviews({ data }: ListInterviewProps) {
           return (
             <>
               {interview?.answered === 0 &&
-              interview?.status !== "completed" ? (
+              interview?.status !== "completed" &&
+              !isAdminPath(pathname) ? (
                 <Button
                   className="bg-foreground font-medium text-background"
                   color="secondary"
@@ -112,21 +120,37 @@ export default function ListInterviews({ data }: ListInterviewProps) {
                 </Button>
               ) : (
                 <div className="relative flex items-center justify-center gap-2">
-                  {interview?.status !== "completed" && (
-                    <Tooltip color="danger" content="Continue Interview">
-                      <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                  {interview?.status !== "completed" &&
+                    !isAdminPath(pathname) && (
+                      <Tooltip color="danger" content="Continue Interview">
+                        <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                          <Icon
+                            icon="solar:round-double-alt-arrow-right-bold"
+                            fontSize={22}
+                            onClick={() =>
+                              router.push(
+                                `/app/interviews/conduct/${interview._id}`
+                              )
+                            }
+                          />
+                        </span>
+                      </Tooltip>
+                    )}
+
+                  {interview?.status === "completed" && (
+                    <Tooltip content="View Result">
+                      <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
                         <Icon
-                          icon="solar:round-double-alt-arrow-right-bold"
+                          icon="solar:eye-broken"
                           fontSize={22}
                           onClick={() =>
-                            router.push(
-                              `/app/interviews/conduct/${interview._id}`
-                            )
+                            router.push(`/app/results/${interview._id}`)
                           }
                         />
                       </span>
                     </Tooltip>
                   )}
+
                   <Tooltip color="danger" content="Delete Interview">
                     <span className="text-lg text-danger cursor-pointer active:opacity-50">
                       <Icon
