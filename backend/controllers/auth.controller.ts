@@ -5,6 +5,9 @@ import { delete_file, upload_file } from "../utils/cloudinary";
 import { resetPasswordHTMLTemplate } from "../utils/emailTemplate";
 import sendEmail from "../utils/sendEmail";
 import crypto from "crypto";
+import { getQueryStr } from "../utils/utils";
+import { getFirstDayOfMonth, getToday } from "@/helpers/helpers";
+import Interview from "../models/interview.model";
 
 export const register = catchAsyncErrors(
   async (name: string, email: string, password: string) => {
@@ -164,3 +167,55 @@ export const resetUserPassword = catchAsyncErrors(
     return { passwordUpdated: true };
   }
 );
+
+export const getDashboardStats = catchAsyncErrors(async (req: Request) => {
+  await dbConnect();
+
+  const subscriptionPackage = 9.99;
+
+  const { searchParams } = new URL(req.url);
+  const queryStr = getQueryStr(searchParams);
+
+  const start = new Date(queryStr.start || getFirstDayOfMonth());
+  const end = new Date(queryStr.end || getToday());
+
+  start.setHours(0, 0, 0, 0);
+  end.setHours(23, 59, 59, 999);
+
+  const totalUsers = await User.countDocuments({
+    createdAt: { $gte: start, $lte: end },
+  });
+
+  const activeSubscriptionCount = await User.countDocuments({
+    "subscription.created": { $gte: start, $lte: end },
+    "subscription.status": "active",
+  });
+
+  const totalSubscriptionWorth = activeSubscriptionCount * subscriptionPackage;
+
+  const totalInterviews = await Interview.countDocuments({
+    createdAt: { $gte: start, $lte: end },
+  });
+
+  const completedInterviews = await Interview.countDocuments({
+    createdAt: { $gte: start, $lte: end },
+    status: "completed",
+  });
+
+  const interviewCompletionRate =
+    completedInterviews > 0
+      ? ((completedInterviews / totalInterviews) * 100).toFixed(2)
+      : 0;
+
+  const averageInterviewsPerUser =
+    totalUsers > 0 ? (totalInterviews / totalUsers).toFixed(2) : 0;
+
+  return {
+    totalUsers,
+    activeSubscriptions: activeSubscriptionCount,
+    subscriptionWorth: totalSubscriptionWorth,
+    totalInterviews,
+    interviewCompletionRate,
+    averageInterviewsPerUser,
+  };
+});
