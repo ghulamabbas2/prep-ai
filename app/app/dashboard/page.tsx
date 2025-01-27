@@ -28,7 +28,11 @@ async function getDashboardStats(searchParams: string) {
   }
 }
 
-const DashboardPage = async ({ searchParams }: { searchParams: string }) => {
+const DashboardPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<string>;
+}) => {
   const searchParamsValue = await searchParams;
 
   const data = await getDashboardStats(searchParamsValue);

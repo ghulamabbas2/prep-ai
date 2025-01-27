@@ -28,7 +28,11 @@ async function getInterviews(searchParams: string) {
   }
 }
 
-const ResultsPage = async ({ searchParams }: { searchParams: string }) => {
+const ResultsPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<string>;
+}) => {
   const searchParamsValue = await searchParams;
 
   const data = await getInterviews(searchParamsValue);

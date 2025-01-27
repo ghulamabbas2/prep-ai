@@ -24,7 +24,11 @@ async function getInterview(id: string) {
   }
 }
 
-const InterviewConductPage = async ({ params }: { params: { id: string } }) => {
+const InterviewConductPage = async ({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) => {
   const { id } = await params;
 
   const data = await getInterview(id);

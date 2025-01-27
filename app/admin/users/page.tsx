@@ -28,7 +28,11 @@ async function getUsers(searchParams: string) {
   }
 }
 
-const UsersPage = async ({ searchParams }: { searchParams: string }) => {
+const UsersPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<string>;
+}) => {
   const searchParamsValue = await searchParams;
 
   const data = await getUsers(searchParamsValue);

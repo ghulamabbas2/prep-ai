@@ -30,7 +30,7 @@ async function getDashboardStats(searchParams: string) {
 const AdminDashboardPage = async ({
   searchParams,
 }: {
-  searchParams: string;
+  searchParams: Promise<string>;
 }) => {
   const searchParamsValue = await searchParams;
 

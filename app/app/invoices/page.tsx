@@ -5,10 +5,10 @@ import { cookies } from "next/headers";
 import React from "react";
 
 async function getInvoices() {
-  try {
-    const nextCookies = await cookies();
-    const authHeader = getAuthHeader(nextCookies);
+  const nextCookies = await cookies();
+  const authHeader = getAuthHeader(nextCookies);
 
+  try {
     const response = await fetch(
       `${process.env?.API_URL}/api/invoices`,
       authHeader
