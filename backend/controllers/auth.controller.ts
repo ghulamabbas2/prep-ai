@@ -1,6 +1,6 @@
 import dbConnect from "../config/dbConnect";
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors";
-import User from "../models/user.model";
+import User, { IUser } from "../models/user.model";
 import { delete_file, upload_file } from "../utils/cloudinary";
 import { resetPasswordHTMLTemplate } from "../utils/emailTemplate";
 import sendEmail from "../utils/sendEmail";
@@ -8,6 +8,7 @@ import crypto from "crypto";
 import { getQueryStr } from "../utils/utils";
 import { getFirstDayOfMonth, getToday } from "@/helpers/helpers";
 import Interview from "../models/interview.model";
+import APIFilters from "../utils/apiFilters";
 
 export const register = catchAsyncErrors(
   async (name: string, email: string, password: string) => {
@@ -218,4 +219,63 @@ export const getDashboardStats = catchAsyncErrors(async (req: Request) => {
     interviewCompletionRate,
     averageInterviewsPerUser,
   };
+});
+
+export const getAllUsers = catchAsyncErrors(async (request: Request) => {
+  await dbConnect();
+
+  const resPerPage: number = 2;
+
+  const { searchParams } = new URL(request.url);
+  const queryStr = getQueryStr(searchParams);
+
+  const apiFilters = new APIFilters(User, queryStr).filter();
+
+  let users: IUser[] = await apiFilters.query;
+  const filteredCount: number = users.length;
+
+  apiFilters.pagination(resPerPage).sort();
+  users = await apiFilters.query.clone();
+
+  return { users, resPerPage, filteredCount };
+});
+
+export const updateUserData = catchAsyncErrors(
+  async (
+    userId: string,
+    userData: {
+      name: string;
+      roles: string[];
+    }
+  ) => {
+    await dbConnect();
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    await User.findByIdAndUpdate(userId, userData);
+
+    return { updated: true };
+  }
+);
+
+export const deleteUserData = catchAsyncErrors(async (userId: string) => {
+  await dbConnect();
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (user?.profilePicture?.id) {
+    await delete_file(user.profilePicture.id);
+  }
+
+  await user.deleteOne();
+
+  return { deleted: true };
 });
